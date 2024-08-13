@@ -1,0 +1,304 @@
+use bevy::prelude::*;
+use bevy_ecs_ldtk::prelude::*;
+
+use crate::player::PlayerStats;
+
+const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
+const TEXT_COLOR: Color = Color::srgb(0.5, 0.8, 0.9);
+const GAME_OVER_COLOR: Color = Color::srgb(0.7, 0.2, 0.3);
+
+#[derive(Component)]
+pub(crate) struct Menu;
+
+#[derive(Component)]
+pub(crate) struct ScoreText;
+
+#[derive(Component)]
+pub(crate) struct HealthText;
+
+#[derive(Component)]
+pub(crate) struct LevelText;
+
+pub(crate) fn setup_status_bar(mut commands: Commands) {
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(0.0),
+                justify_content: JustifyContent::SpaceBetween,
+                align_items: AlignItems::Center,
+                width: Val::Percent(100.0),
+                height: Val::Percent(4.0),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            ..default()
+        })
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "Score: 0",
+                    TextStyle {
+                        font_size: 40.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(ScoreText);
+            parent
+                .spawn(TextBundle::from_section(
+                    "Health: 100",
+                    TextStyle {
+                        font_size: 40.0,
+                        color: TEXT_COLOR,
+                        ..default()
+                    },
+                ))
+                .insert(HealthText);
+            parent
+                .spawn(TextBundle::from_section(
+                    "Level: 1",
+                    TextStyle {
+                        font_size: 40.0,
+                        color: TEXT_COLOR,
+                        ..default()
+                    },
+                ))
+                .insert(LevelText);
+        });
+}
+
+pub(crate) fn update_status_bar(
+    player_stats: Res<PlayerStats>,
+    level_selection: ResMut<LevelSelection>,
+    mut score_query: Query<&mut Text, With<ScoreText>>,
+    mut health_query: Query<&mut Text, (With<HealthText>, Without<ScoreText>)>,
+    mut level_query: Query<&mut Text, (With<LevelText>, Without<ScoreText>, Without<HealthText>)>,
+) {
+    if let Ok(mut text) = score_query.get_single_mut() {
+        text.sections[0].value = format!(" Score: {:.0}", player_stats.score);
+    }
+
+    if let Ok(mut text) = health_query.get_single_mut() {
+        text.sections[0].value = format!(
+            "Health: {:.0}",
+            if player_stats.health > 0.0 {
+                player_stats.health
+            } else {
+                0.0
+            }
+        );
+    }
+
+    let level = match level_selection.into_inner() {
+        LevelSelection::Indices(indices) => indices.level + 1,
+        _ => 1,
+    };
+
+    if let Ok(mut text) = level_query.get_single_mut() {
+        text.sections[0].value = format!("Level: {} ", level);
+    }
+}
+
+pub(crate) fn setup_menu(mut commands: Commands) {
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(8.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                width: Val::Percent(50.0),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "GLULANDS v0.1.0",
+                    TextStyle {
+                        font_size: 80.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(30.0),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Start,
+                width: Val::Percent(50.0),
+                padding: UiRect::all(Val::Percent(1.0)),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "SPACE - START/PAUSE GAME",
+                    TextStyle {
+                        font_size: 50.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(40.0),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Start,
+                width: Val::Percent(50.0),
+                padding: UiRect::all(Val::Percent(1.0)),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "AWSD - MOVE PLAYER AROUND",
+                    TextStyle {
+                        font_size: 50.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(50.0),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Start,
+                width: Val::Percent(50.0),
+                padding: UiRect::all(Val::Percent(1.0)),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "M - TOGGLE MUSIC ON/OFF",
+                    TextStyle {
+                        font_size: 50.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(60.0),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Start,
+                width: Val::Percent(50.0),
+                padding: UiRect::all(Val::Percent(1.0)),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "F5 - RESTART GAME",
+                    TextStyle {
+                        font_size: 50.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(70.0),
+                justify_content: JustifyContent::Start,
+                align_items: AlignItems::Start,
+                width: Val::Percent(50.0),
+                padding: UiRect::all(Val::Percent(1.0)),
+                ..default()
+            },
+            background_color: BAR_COLOR.into(),
+            border_radius: BorderRadius::all(Val::Percent(12.5)),
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "Q - QUIT GAME",
+                    TextStyle {
+                        font_size: 50.0,
+                        color: TEXT_COLOR,
+                        ..Default::default()
+                    },
+                ))
+                .insert(Menu);
+        });
+}
+
+pub(crate) fn despawn_menu(mut commands: Commands, query: Query<Entity, With<Menu>>) {
+    for entity in query.iter() {
+        commands.entity(entity).despawn();
+    }
+}
+
+pub(crate) fn setup_game_over(mut commands: Commands) {
+    commands
+        .spawn(NodeBundle {
+            style: Style {
+                left: Val::Percent(25.0),
+                top: Val::Percent(50.0),
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                width: Val::Percent(50.0),
+                ..default()
+            },
+            ..default()
+        })
+        .insert(Menu)
+        .with_children(|parent| {
+            parent
+                .spawn(TextBundle::from_section(
+                    "GAME OVER",
+                    TextStyle {
+                        font_size: 150.0,
+                        color: GAME_OVER_COLOR,
+                        ..default()
+                    },
+                ))
+                .insert(Menu);
+        });
+}
