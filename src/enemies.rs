@@ -73,9 +73,8 @@ pub(crate) fn patrol(mut query: Query<(&mut Transform, &mut Patrol)>, time: Res<
         let start = patrol.points.first().unwrap().extend(0.0);
         let mut finish = patrol.points.last().unwrap().extend(0.0);
         finish.y += GRID_SIZE as f32 / 2.0;
-        let orientation = if patrol.forward { 1.0 } else { -1.0 };
-
         let direction = (finish - start).normalize();
+        let orientation = if patrol.forward { 1.0 } else { -1.0 };
 
         if (transform.translation.x >= finish.x && patrol.forward)
             || (transform.translation.x <= start.x && !patrol.forward)
