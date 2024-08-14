@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::{prelude::*, utils::ldtk_pixel_coords_to_translation_pivoted};
 
 const GRID_SIZE: i32 = 16;
-const COW_SPEED: f32 = 50.0;
+const COW_SPEED: f32 = 70.0;
 
 #[derive(Clone, PartialEq, Debug, Default, Component)]
 pub(crate) struct Patrol {
