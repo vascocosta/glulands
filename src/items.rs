@@ -4,6 +4,7 @@ use bevy_ecs_ldtk::prelude::*;
 use crate::player::{Player, PlayerStats};
 
 const CARROT_HEALTH: f32 = 25.0;
+const BRONZE_SCORE: f32 = 50.0;
 
 #[derive(Default, Clone, Component)]
 pub(crate) struct Key;
@@ -23,6 +24,18 @@ pub(crate) struct Carrot;
 #[derive(Clone, Default, Bundle, LdtkEntity)]
 pub(crate) struct CarrotBundle {
     pub carrot: Carrot,
+    #[sprite_sheet_bundle]
+    pub sprite_sheet_bundle: LdtkSpriteSheetBundle,
+    #[grid_coords]
+    grid_coords: GridCoords,
+}
+
+#[derive(Default, Clone, Component)]
+pub(crate) struct Bronze;
+
+#[derive(Clone, Default, Bundle, LdtkEntity)]
+pub(crate) struct BronzeBundle {
+    pub carrot: Bronze,
     #[sprite_sheet_bundle]
     pub sprite_sheet_bundle: LdtkSpriteSheetBundle,
     #[grid_coords]
@@ -62,6 +75,27 @@ pub(crate) fn check_carrots(
             if player_grid_pos == carrot_grid_pos {
                 player_stats.health += CARROT_HEALTH;
                 commands.entity(carrot_entity).despawn();
+                commands.spawn(AudioBundle {
+                    source: asset_server.load("sounds/item.ogg"),
+                    ..default()
+                });
+            }
+        }
+    }
+}
+
+pub(crate) fn check_bronze(
+    player_grid_pos: Query<&GridCoords, (With<Player>, Changed<GridCoords>)>,
+    bronze_entity_grid_pos: Query<(Entity, &GridCoords), With<Bronze>>,
+    mut player_stats: ResMut<PlayerStats>,
+    mut commands: Commands,
+    asset_server: Res<AssetServer>,
+) {
+    if let Ok(player_grid_pos) = player_grid_pos.get_single() {
+        for (bronze_entity, bronze_grid_pos) in &bronze_entity_grid_pos {
+            if player_grid_pos == bronze_grid_pos {
+                player_stats.score += BRONZE_SCORE;
+                commands.entity(bronze_entity).despawn();
                 commands.spawn(AudioBundle {
                     source: asset_server.load("sounds/item.ogg"),
                     ..default()

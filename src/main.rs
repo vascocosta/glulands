@@ -8,7 +8,7 @@ use bevy_ecs_ldtk::prelude::*;
 use collisions::{CollisionBundle, LevelCollisions};
 use enemies::CowBundle;
 use gameplay::{BackgroundMusic, GameState, GoalBundle};
-use items::{CarrotBundle, KeyBundle};
+use items::{BronzeBundle, CarrotBundle, KeyBundle};
 use player::{MainCamera, PlayerBundle, PlayerStats};
 
 mod collisions;
@@ -47,6 +47,7 @@ fn main() {
         .register_ldtk_entity::<CowBundle>("Cow")
         .register_ldtk_entity::<KeyBundle>("Key")
         .register_ldtk_entity::<CarrotBundle>("Carrot")
+        .register_ldtk_entity::<BronzeBundle>("Bronze")
         .register_ldtk_entity::<GoalBundle>("Goal")
         .add_systems(Startup, setup)
         .add_systems(Update, (gameplay::toggle_state, gameplay::toggle_music))
@@ -68,6 +69,7 @@ fn main() {
                 (player::move_player, player::center_camera).chain(),
                 items::check_keys,
                 items::check_carrots,
+                items::check_bronze,
                 gameplay::check_goal,
                 enemies::patrol,
                 player::update_player_stats,
