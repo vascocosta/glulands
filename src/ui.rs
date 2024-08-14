@@ -24,7 +24,7 @@ pub(crate) struct KeysText;
 #[derive(Component)]
 pub(crate) struct LevelText;
 
-pub(crate) fn setup_status_bar(mut commands: Commands) {
+pub(crate) fn setup_status_bar(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .spawn(NodeBundle {
             style: Style {
@@ -41,41 +41,41 @@ pub(crate) fn setup_status_bar(mut commands: Commands) {
         .with_children(|parent| {
             parent
                 .spawn(TextBundle::from_section(
-                    "Score: 0000",
+                    "󱉾 0000",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 40.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(ScoreText);
             parent
                 .spawn(TextBundle::from_section(
-                    "Health: 100",
+                    " 100",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 40.0,
                         color: TEXT_COLOR,
-                        ..default()
                     },
                 ))
                 .insert(HealthText);
             parent
                 .spawn(TextBundle::from_section(
-                    "Keys: 00/00",
+                    "󱕴 00/00",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 40.0,
                         color: TEXT_COLOR,
-                        ..default()
                     },
                 ))
                 .insert(KeysText);
             parent
                 .spawn(TextBundle::from_section(
-                    "Level: 1",
+                    "󰬓 1",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 40.0,
                         color: TEXT_COLOR,
-                        ..default()
                     },
                 ))
                 .insert(LevelText);
@@ -99,12 +99,12 @@ pub(crate) fn update_status_bar(
     >,
 ) {
     if let Ok(mut text) = score_query.get_single_mut() {
-        text.sections[0].value = format!("Score: {:05.0}", player_stats.score);
+        text.sections[0].value = format!("󱉾 {:05.0}", player_stats.score);
     }
 
     if let Ok(mut text) = health_query.get_single_mut() {
         text.sections[0].value = format!(
-            "Health: {:03.0}",
+            " {:03.0}",
             if player_stats.health > 0.0 {
                 player_stats.health
             } else {
@@ -119,15 +119,15 @@ pub(crate) fn update_status_bar(
     };
 
     if let Ok(mut text) = keys_query.get_single_mut() {
-        text.sections[0].value = format!("Keys: {:02}/{:02}", player_stats.keys, level)
+        text.sections[0].value = format!("󱕴 {:02}/{:02}", player_stats.keys, level)
     }
 
     if let Ok(mut text) = level_query.get_single_mut() {
-        text.sections[0].value = format!("Level: {:02}", level);
+        text.sections[0].value = format!("󰬓 {:02}", level);
     }
 }
 
-pub(crate) fn setup_menu(mut commands: Commands) {
+pub(crate) fn setup_menu(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands
         .spawn(NodeBundle {
             style: Style {
@@ -148,9 +148,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     format!("{} {}", APP_NAME, VERSION),
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 80.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
@@ -176,9 +176,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     "SPACE - START/PAUSE GAME",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 50.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
@@ -204,9 +204,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     "AWSD - MOVE PLAYER AROUND",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 50.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
@@ -232,9 +232,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     "M - TOGGLE MUSIC ON/OFF",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 50.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
@@ -260,9 +260,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     "F5 - RESTART GAME",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 50.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
@@ -288,9 +288,9 @@ pub(crate) fn setup_menu(mut commands: Commands) {
                 .spawn(TextBundle::from_section(
                     "Q - QUIT GAME",
                     TextStyle {
+                        font: asset_server.load("fonts/FiraCodeNerdFont-Regular.ttf"),
                         font_size: 50.0,
                         color: TEXT_COLOR,
-                        ..Default::default()
                     },
                 ))
                 .insert(Menu);
