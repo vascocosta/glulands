@@ -4,7 +4,7 @@ use bevy_ecs_ldtk::prelude::*;
 use crate::player::PlayerStats;
 
 const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
-const TEXT_COLOR: Color = Color::srgb(0.5, 0.8, 0.9);
+const TEXT_COLOR: Color = Color::srgb(0.1, 1.0, 0.7);
 const GAME_OVER_COLOR: Color = Color::srgb(0.7, 0.2, 0.3);
 
 #[derive(Component)]
@@ -17,6 +17,9 @@ pub(crate) struct ScoreText;
 pub(crate) struct HealthText;
 
 #[derive(Component)]
+pub(crate) struct KeysText;
+
+#[derive(Component)]
 pub(crate) struct LevelText;
 
 pub(crate) fn setup_status_bar(mut commands: Commands) {
@@ -24,10 +27,10 @@ pub(crate) fn setup_status_bar(mut commands: Commands) {
         .spawn(NodeBundle {
             style: Style {
                 left: Val::Percent(0.0),
-                justify_content: JustifyContent::SpaceBetween,
+                justify_content: JustifyContent::SpaceEvenly,
                 align_items: AlignItems::Center,
                 width: Val::Percent(100.0),
-                height: Val::Percent(4.0),
+                height: Val::Percent(5.0),
                 ..default()
             },
             background_color: BAR_COLOR.into(),
@@ -36,7 +39,7 @@ pub(crate) fn setup_status_bar(mut commands: Commands) {
         .with_children(|parent| {
             parent
                 .spawn(TextBundle::from_section(
-                    "Score: 0",
+                    "Score: 0000",
                     TextStyle {
                         font_size: 40.0,
                         color: TEXT_COLOR,
@@ -56,6 +59,16 @@ pub(crate) fn setup_status_bar(mut commands: Commands) {
                 .insert(HealthText);
             parent
                 .spawn(TextBundle::from_section(
+                    "Keys: 00/00",
+                    TextStyle {
+                        font_size: 40.0,
+                        color: TEXT_COLOR,
+                        ..default()
+                    },
+                ))
+                .insert(KeysText);
+            parent
+                .spawn(TextBundle::from_section(
                     "Level: 1",
                     TextStyle {
                         font_size: 40.0,
@@ -72,15 +85,24 @@ pub(crate) fn update_status_bar(
     level_selection: ResMut<LevelSelection>,
     mut score_query: Query<&mut Text, With<ScoreText>>,
     mut health_query: Query<&mut Text, (With<HealthText>, Without<ScoreText>)>,
-    mut level_query: Query<&mut Text, (With<LevelText>, Without<ScoreText>, Without<HealthText>)>,
+    mut keys_query: Query<&mut Text, (With<KeysText>, Without<ScoreText>, Without<HealthText>)>,
+    mut level_query: Query<
+        &mut Text,
+        (
+            With<LevelText>,
+            Without<ScoreText>,
+            Without<HealthText>,
+            Without<KeysText>,
+        ),
+    >,
 ) {
     if let Ok(mut text) = score_query.get_single_mut() {
-        text.sections[0].value = format!(" Score: {:.0}", player_stats.score);
+        text.sections[0].value = format!("Score: {:05.0}", player_stats.score);
     }
 
     if let Ok(mut text) = health_query.get_single_mut() {
         text.sections[0].value = format!(
-            "Health: {:.0}",
+            "Health: {:03.0}",
             if player_stats.health > 0.0 {
                 player_stats.health
             } else {
@@ -94,8 +116,12 @@ pub(crate) fn update_status_bar(
         _ => 1,
     };
 
+    if let Ok(mut text) = keys_query.get_single_mut() {
+        text.sections[0].value = format!("Keys: {:02}/{:02}", player_stats.keys, level)
+    }
+
     if let Ok(mut text) = level_query.get_single_mut() {
-        text.sections[0].value = format!("Level: {} ", level);
+        text.sections[0].value = format!("Level: {:02}", level);
     }
 }
 
