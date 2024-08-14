@@ -6,6 +6,7 @@ use crate::enemies::Cow;
 
 const GRID_SIZE: i32 = 16;
 const PLAYER_SPEED: f32 = 80.0;
+const COW_HEALTH_HIT: f32 = 20.0;
 const CORRECTION: f32 = 10.0;
 
 #[derive(Default, Component)]
@@ -117,7 +118,7 @@ pub(crate) fn update_player_stats(
             );
 
             if *player_grid_pos == cow_grid_pos && player_stats.hit_timer.finished() {
-                player_stats.health -= 15.0;
+                player_stats.health -= COW_HEALTH_HIT;
                 commands.spawn(AudioBundle {
                     source: asset_server.load("sounds/hit.ogg"),
                     ..default()
