@@ -3,6 +3,8 @@ use bevy_ecs_ldtk::prelude::*;
 
 use crate::player::PlayerStats;
 
+const APP_NAME: &str = "GLULANDS";
+const VERSION: &str = "v0.2.0";
 const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
 const TEXT_COLOR: Color = Color::srgb(0.1, 1.0, 0.7);
 const GAME_OVER_COLOR: Color = Color::srgb(0.7, 0.2, 0.3);
@@ -144,7 +146,7 @@ pub(crate) fn setup_menu(mut commands: Commands) {
         .with_children(|parent| {
             parent
                 .spawn(TextBundle::from_section(
-                    "GLULANDS v0.1.0",
+                    format!("{} {}", APP_NAME, VERSION),
                     TextStyle {
                         font_size: 80.0,
                         color: TEXT_COLOR,
