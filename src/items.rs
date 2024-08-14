@@ -5,6 +5,7 @@ use crate::player::{Player, PlayerStats};
 
 const CARROT_HEALTH: f32 = 25.0;
 const BRONZE_SCORE: f32 = 50.0;
+const PLAYER_MAX_HEALTH: f32 = 100.0;
 
 #[derive(Default, Clone, Component)]
 pub(crate) struct Key;
@@ -73,7 +74,7 @@ pub(crate) fn check_carrots(
     if let Ok(player_grid_pos) = player_grid_pos.get_single() {
         for (carrot_entity, carrot_grid_pos) in &carrot_entity_grid_pos {
             if player_grid_pos == carrot_grid_pos {
-                player_stats.health += CARROT_HEALTH;
+                player_stats.health = (player_stats.health + CARROT_HEALTH).min(PLAYER_MAX_HEALTH);
                 commands.entity(carrot_entity).despawn();
                 commands.spawn(AudioBundle {
                     source: asset_server.load("sounds/item.ogg"),
