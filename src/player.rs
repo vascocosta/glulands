@@ -15,7 +15,7 @@ pub(crate) struct Player;
 #[derive(Default, Bundle, LdtkEntity)]
 pub(crate) struct PlayerBundle {
     player: Player,
-    #[sprite_sheet_bundle]
+    #[sprite_sheet_bundle("Characters/Basic Charakter Spritesheet.png", 16, 16, 64, 64, 0, 0, 68)]
     sprite_sheet_bundle: LdtkSpriteSheetBundle,
     #[grid_coords]
     grid_coords: GridCoords,
@@ -47,6 +47,7 @@ pub(crate) struct MainCamera;
 pub(crate) fn move_player(
     mut player_grid_pos: Query<&mut GridCoords, With<Player>>,
     mut player_transform: Query<&mut Transform, With<Player>>,
+    mut atlas_query: Query<&mut TextureAtlas, With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
     level_collisions: Res<LevelCollisions>,
     time: Res<Time>,
@@ -57,25 +58,30 @@ pub(crate) fn move_player(
 
     if let Ok(mut player_transform) = player_transform.get_single_mut() {
         let mut player_grid_pos = player_grid_pos.single_mut();
+        let mut atlas = atlas_query.single_mut();
 
         if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
             direction.0 = -1.0;
             x_correction = -CORRECTION;
+            atlas.index = 452;
         }
 
         if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
             direction.0 = 1.0;
             x_correction = CORRECTION;
+            atlas.index = 644;
         }
 
         if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
             direction.1 = 1.0;
             y_correction = CORRECTION;
+            atlas.index = 257;
         }
 
         if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
             direction.1 = -1.0;
             y_correction = -CORRECTION;
+            atlas.index = 68;
         }
 
         let new_player_translation_x =
