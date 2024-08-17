@@ -84,6 +84,11 @@ pub(crate) fn move_player(
             atlas.index = 68;
         }
 
+        if (direction.0 as i32).abs() + (direction.1 as i32).abs() > 1 {
+            direction.0 *= 0.5;
+            direction.1 *= 0.5;
+        }
+
         let new_player_translation_x =
             player_transform.translation.x + direction.0 * PLAYER_SPEED * time.delta_seconds();
         let new_player_translation_y =
