@@ -85,8 +85,8 @@ pub(crate) fn move_player(
         }
 
         if (direction.0 as i32).abs() + (direction.1 as i32).abs() > 1 {
-            direction.0 *= 0.5;
-            direction.1 *= 0.5;
+            direction.0 *= 0.75;
+            direction.1 *= 0.75;
         }
 
         let new_player_translation_x =
