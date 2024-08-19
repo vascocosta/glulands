@@ -80,6 +80,7 @@ fn main() {
                 player::update_player_stats,
                 ui::update_status_bar,
                 gameplay::check_game_over,
+                gameplay::check_cheats,
             )
                 .run_if(in_state(GameState::Running)),
         )

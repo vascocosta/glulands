@@ -175,3 +175,16 @@ pub(crate) fn toggle_music(
         audio_sink.toggle();
     }
 }
+
+pub(crate) fn check_cheats(
+    input: Res<ButtonInput<KeyCode>>,
+    level_selection: ResMut<LevelSelection>,
+) {
+    if input.just_released(KeyCode::ControlRight) && input.just_released(KeyCode::KeyL) {
+        let indices = match level_selection.into_inner() {
+            LevelSelection::Indices(indices) => indices,
+            _ => panic!("level selection should always be Indices in this game"),
+        };
+        indices.level += 1;
+    }
+}
