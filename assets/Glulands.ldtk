@@ -15322,6 +15322,25 @@
 							}] }],
 							"__worldX": -72,
 							"__worldY": -152
+						},
+						{
+							"__identifier": "Cow",
+							"__grid": [24,22],
+							"__pivot": [0.5,0.5],
+							"__tags": [],
+							"__tile": { "tilesetUid": 21, "x": 0, "y": 0, "w": 32, "h": 32 },
+							"__smartColor": "#EAD4AA",
+							"iid": "c291b410-4ce0-11ef-b80a-85d0a03d382a",
+							"width": 32,
+							"height": 32,
+							"defUid": 20,
+							"px": [392,360],
+							"fieldInstances": [{ "__identifier": "patrol", "__type": "Array<Point>", "__value": [{ "cx": 26, "cy": 22 }], "__tile": null, "defUid": 23, "realEditorValues": [{
+								"id": "V_String",
+								"params": ["26,22"]
+							}] }],
+							"__worldX": -632,
+							"__worldY": -408
 						}
 					]
 				},
@@ -17345,22 +17364,6 @@
 						},
 						{
 							"__identifier": "Carrot",
-							"__grid": [49,61],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 224, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#733E39",
-							"iid": "063492c0-4ce0-11ef-9489-959a41518efa",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [784,976],
-							"fieldInstances": [],
-							"__worldX": -240,
-							"__worldY": 208
-						},
-						{
-							"__identifier": "Carrot",
 							"__grid": [50,61],
 							"__pivot": [0,0],
 							"__tags": [],
@@ -17390,22 +17393,6 @@
 							"fieldInstances": [],
 							"__worldX": -208,
 							"__worldY": 208
-						},
-						{
-							"__identifier": "Carrot",
-							"__grid": [49,35],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 224, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#733E39",
-							"iid": "a79efeb0-4ce0-11ef-9489-4b1978219474",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [784,560],
-							"fieldInstances": [],
-							"__worldX": -240,
-							"__worldY": -208
 						},
 						{
 							"__identifier": "Carrot",
@@ -17470,22 +17457,6 @@
 							"fieldInstances": [],
 							"__worldX": -736,
 							"__worldY": -160
-						},
-						{
-							"__identifier": "Carrot",
-							"__grid": [41,20],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 224, "y": 64, "w": 16, "h": 16 },
-							"__smartColor": "#733E39",
-							"iid": "a122b930-4ce0-11ef-b905-cdf04d0fa68a",
-							"width": 16,
-							"height": 16,
-							"defUid": 30,
-							"px": [656,320],
-							"fieldInstances": [],
-							"__worldX": -368,
-							"__worldY": -448
 						},
 						{
 							"__identifier": "Carrot",
@@ -17624,22 +17595,6 @@
 							"fieldInstances": [],
 							"__worldX": -48,
 							"__worldY": 208
-						},
-						{
-							"__identifier": "Key",
-							"__grid": [30,41],
-							"__pivot": [0,0],
-							"__tags": [],
-							"__tile": { "tilesetUid": 24, "x": 48, "y": 160, "w": 16, "h": 16 },
-							"__smartColor": "#E4A672",
-							"iid": "52ed2bd0-4ce0-11ef-9489-03e9751fcde8",
-							"width": 16,
-							"height": 16,
-							"defUid": 26,
-							"px": [480,656],
-							"fieldInstances": [],
-							"__worldX": -544,
-							"__worldY": -112
 						},
 						{
 							"__identifier": "Key",
