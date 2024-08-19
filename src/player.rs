@@ -4,7 +4,7 @@ use bevy_ecs_ldtk::prelude::*;
 use crate::collisions::LevelCollisions;
 use crate::enemies::Cow;
 
-const GRID_SIZE: i32 = 16;
+pub(crate) const GRID_SIZE: i32 = 16;
 const PLAYER_SPEED: f32 = 80.0;
 const COW_HEALTH_HIT: f32 = 20.0;
 const CORRECTION: f32 = 10.0;

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::player::{Player, PlayerStats};
+use crate::player::{Player, PlayerStats, GRID_SIZE};
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
 pub(crate) enum GameState {
@@ -88,7 +88,7 @@ pub(crate) fn check_portal_entry(
     asset_server: Res<AssetServer>,
     mut commands: Commands,
 ) {
-    if let Ok(mut player_grid_pos) = player_grid_pos.get_single_mut() {
+    for mut player_grid_pos in &mut player_grid_pos {
         if let Ok(portal_entry_grid_pos) = portal_entries.get_single() {
             let portal_exit_grid_pos = portal_exits.single();
 
@@ -98,7 +98,7 @@ pub(crate) fn check_portal_entry(
                 let mut player_tranform = player_transform.single_mut();
                 player_tranform.translation = bevy_ecs_ldtk::utils::grid_coords_to_translation(
                     *player_grid_pos,
-                    IVec2::new(16, 16),
+                    IVec2::new(GRID_SIZE, GRID_SIZE),
                 )
                 .extend(0.0);
 
