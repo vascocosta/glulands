@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 use std::collections::HashSet;
 
-const GRID_SIZE: i32 = 16;
+use crate::consts::*;
 
 #[derive(Default, Component)]
 pub(crate) struct Collision;

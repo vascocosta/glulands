@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
-use crate::player::{Player, PlayerStats, GRID_SIZE};
+use crate::consts::*;
+use crate::player::{Player, PlayerStats};
 
 #[derive(States, Debug, Clone, PartialEq, Eq, Hash)]
 pub(crate) enum GameState {

@@ -14,6 +14,7 @@ use items::{BronzeBundle, CarrotBundle, KeyBundle};
 use player::{MainCamera, PlayerBundle, PlayerStats};
 
 mod collisions;
+mod consts;
 mod enemies;
 mod gameplay;
 mod items;

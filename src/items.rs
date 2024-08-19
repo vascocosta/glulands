@@ -1,11 +1,8 @@
 use bevy::prelude::*;
 use bevy_ecs_ldtk::prelude::*;
 
+use crate::consts::*;
 use crate::player::{Player, PlayerStats};
-
-const CARROT_HEALTH: f32 = 25.0;
-const BRONZE_SCORE: f32 = 50.0;
-const PLAYER_MAX_HEALTH: f32 = 100.0;
 
 #[derive(Default, Clone, Component)]
 pub(crate) struct Key;
