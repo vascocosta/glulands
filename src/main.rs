@@ -28,17 +28,16 @@ fn main() {
             DefaultPlugins
                 .set(WindowPlugin {
                     primary_window: Some(Window {
-                        canvas: Some("#glulands-canvas".into()),
+                        canvas: Some(CANVAS_NAME.into()),
                         fit_canvas_to_parent: true,
                         prevent_default_event_handling: false,
-                        resolution: WindowResolution::new(1600.0, 900.0),
+                        resolution: WindowResolution::new(PHYSICAL_WIDTH, PHYSICAL_HEIGHT),
                         ..default()
                     }),
                     ..default()
                 })
                 .set(ImagePlugin::default_nearest()),
         )
-        //.add_plugins(DefaultPlugins.set(ImagePlugin::default_nearest()))
         .add_plugins(LdtkPlugin)
         .insert_state(GameState::Menu)
         .insert_resource(ClearColor(BACKGROUND_COLOR))
@@ -46,13 +45,14 @@ fn main() {
         .insert_resource(LevelCollisions::default())
         .insert_resource(LevelSelection::index(0))
         .register_ldtk_entity::<PlayerBundle>("Player")
-        .register_ldtk_entity::<CowBundle>("Cow")
+        .register_ldtk_entity::<GoalBundle>("Goal")
         .register_ldtk_entity::<KeyBundle>("Key")
         .register_ldtk_entity::<CarrotBundle>("Carrot")
         .register_ldtk_entity::<BronzeBundle>("Bronze")
+        .register_ldtk_entity::<CowBundle>("Cow")
         .register_ldtk_entity::<PortalEntryBundle>("Portal_Entry")
         .register_ldtk_entity::<PortalExitBundle>("Portal_Exit")
-        .register_ldtk_entity::<GoalBundle>("Goal")
+        .register_ldtk_int_cell::<CollisionBundle>(1)
         .add_systems(Startup, setup)
         .add_systems(Update, (gameplay::toggle_state, gameplay::toggle_music))
         .add_systems(
@@ -71,35 +71,35 @@ fn main() {
             (
                 collisions::cache_collision_locations,
                 (player::move_player, player::center_camera).chain(),
+                player::update_player_stats,
                 items::check_keys,
                 items::check_carrots,
                 items::check_bronze,
-                gameplay::check_portal_entry,
-                gameplay::check_goal,
                 enemies::patrol,
-                player::update_player_stats,
-                ui::update_status_bar,
+                gameplay::check_goal,
                 gameplay::check_game_over,
+                gameplay::check_portal_entry,
                 gameplay::check_cheats,
+                ui::update_status_bar,
             )
                 .run_if(in_state(GameState::Running)),
         )
-        .register_ldtk_int_cell::<CollisionBundle>(1)
         .run();
 }
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let mut camera = Camera2dBundle::default();
-    camera.projection.scale = 0.2;
-    camera.transform.translation.x = 1600.0 / 8.0;
-    camera.transform.translation.y = 900.0 / 8.0;
+    camera.projection.scale = SCALE;
+    camera.transform.translation.x = PHYSICAL_WIDTH / 8.0;
+    camera.transform.translation.y = PHYSICAL_HEIGHT / 8.0;
     commands.spawn((camera, MainCamera));
+
     commands.spawn((
         AudioBundle {
-            source: asset_server.load("sounds/Intergalactic Odyssey.ogg"),
+            source: asset_server.load(BACKGROUND_MUSIC_PATH),
             settings: PlaybackSettings {
                 mode: PlaybackMode::Loop,
-                volume: Volume::new(0.3),
+                volume: Volume::new(BACKGROUND_MUSIC_VOLUME),
                 paused: true,
                 ..default()
             },
@@ -110,7 +110,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 fn setup_ldtk_world(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.spawn(LdtkWorldBundle {
-        ldtk_handle: asset_server.load("Glulands.ldtk"),
+        ldtk_handle: asset_server.load(LDTK_PROJECT_PATH),
         ..default()
     });
 }

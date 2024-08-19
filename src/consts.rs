@@ -2,8 +2,16 @@ use bevy::color::Color;
 
 pub(crate) const APP_NAME: &str = "GLULANDS";
 pub(crate) const VERSION: &str = "v0.4.2";
+pub(crate) const CANVAS_NAME: &str = "#glulands-canvas";
 
+pub(crate) const PHYSICAL_WIDTH: f32 = 1600.0;
+pub(crate) const PHYSICAL_HEIGHT: f32 = 900.0;
+pub(crate) const SCALE: f32 = 0.2;
 pub(crate) const GRID_SIZE: i32 = 16;
+pub(crate) const LDTK_PROJECT_PATH: &str = "Glulands.ldtk";
+
+pub(crate) const BACKGROUND_MUSIC_PATH: &str = "sounds/Intergalactic Odyssey.ogg";
+pub(crate) const BACKGROUND_MUSIC_VOLUME: f32 = 0.3;
 
 pub(crate) const BACKGROUND_COLOR: Color = Color::srgb(0.15, 0.15, 0.15);
 pub(crate) const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
