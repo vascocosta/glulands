@@ -43,7 +43,7 @@ pub(crate) struct MainCamera;
 pub(crate) fn move_player(
     mut player_grid_pos: Query<&mut GridCoords, With<Player>>,
     mut player_transform: Query<&mut Transform, With<Player>>,
-    mut atlas_query: Query<&mut TextureAtlas, With<Player>>,
+    mut player_atlas: Query<&mut TextureAtlas, With<Player>>,
     input: Res<ButtonInput<KeyCode>>,
     level_collisions: Res<LevelCollisions>,
     time: Res<Time>,
@@ -53,55 +53,66 @@ pub(crate) fn move_player(
     let mut y_correction = 0.0;
 
     if let Ok(mut player_transform) = player_transform.get_single_mut() {
-        let mut player_grid_pos = player_grid_pos.single_mut();
-        let mut atlas = atlas_query.single_mut();
+        if let Ok(mut player_grid_pos) = player_grid_pos.get_single_mut() {
+            if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
+                direction.0 = -1.0;
+                x_correction = -CORRECTION;
 
-        if input.pressed(KeyCode::KeyA) || input.pressed(KeyCode::ArrowLeft) {
-            direction.0 = -1.0;
-            x_correction = -CORRECTION;
-            atlas.index = 452;
-        }
+                if let Ok(mut player_atlas) = player_atlas.get_single_mut() {
+                    player_atlas.index = PLAYER_ATLAS_INDEX_LEFT;
+                }
+            }
 
-        if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
-            direction.0 = 1.0;
-            x_correction = CORRECTION;
-            atlas.index = 644;
-        }
+            if input.pressed(KeyCode::KeyD) || input.pressed(KeyCode::ArrowRight) {
+                direction.0 = 1.0;
+                x_correction = CORRECTION;
 
-        if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
-            direction.1 = 1.0;
-            y_correction = CORRECTION;
-            atlas.index = 257;
-        }
+                if let Ok(mut player_atlas) = player_atlas.get_single_mut() {
+                    player_atlas.index = PLAYER_ATLAS_INDEX_RIGHT;
+                }
+            }
 
-        if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
-            direction.1 = -1.0;
-            y_correction = -CORRECTION;
-            atlas.index = 68;
-        }
+            if input.pressed(KeyCode::KeyW) || input.pressed(KeyCode::ArrowUp) {
+                direction.1 = 1.0;
+                y_correction = CORRECTION;
 
-        if (direction.0 as i32).abs() + (direction.1 as i32).abs() > 1 {
-            direction.0 *= 0.75;
-            direction.1 *= 0.75;
-        }
+                if let Ok(mut player_atlas) = player_atlas.get_single_mut() {
+                    player_atlas.index = PLAYER_ATLAS_INDEX_UP;
+                }
+            }
 
-        let new_player_translation_x =
-            player_transform.translation.x + direction.0 * PLAYER_SPEED * time.delta_seconds();
-        let new_player_translation_y =
-            player_transform.translation.y + direction.1 * PLAYER_SPEED * time.delta_seconds();
-        let new_player_transform =
-            Transform::from_xyz(new_player_translation_x, new_player_translation_y, 0.0);
-        let new_player_grid_pos = bevy_ecs_ldtk::utils::translation_to_grid_coords(
-            Vec2::new(
-                new_player_transform.translation.truncate().x + x_correction,
-                new_player_transform.translation.truncate().y + y_correction,
-            ),
-            IVec2::from((GRID_SIZE, GRID_SIZE)),
-        );
+            if input.pressed(KeyCode::KeyS) || input.pressed(KeyCode::ArrowDown) {
+                direction.1 = -1.0;
+                y_correction = -CORRECTION;
 
-        if !level_collisions.collision(&new_player_grid_pos) {
-            *player_grid_pos = new_player_grid_pos;
-            player_transform.translation = new_player_transform.translation;
+                if let Ok(mut player_atlas) = player_atlas.get_single_mut() {
+                    player_atlas.index = PLAYER_ATLAS_INDEX_DOWN;
+                }
+            }
+
+            if (direction.0 as i32).abs() + (direction.1 as i32).abs() > 1 {
+                direction.0 *= 0.75;
+                direction.1 *= 0.75;
+            }
+
+            let new_player_translation_x =
+                player_transform.translation.x + direction.0 * PLAYER_SPEED * time.delta_seconds();
+            let new_player_translation_y =
+                player_transform.translation.y + direction.1 * PLAYER_SPEED * time.delta_seconds();
+            let new_player_transform =
+                Transform::from_xyz(new_player_translation_x, new_player_translation_y, 0.0);
+            let new_player_grid_pos = bevy_ecs_ldtk::utils::translation_to_grid_coords(
+                Vec2::new(
+                    new_player_transform.translation.truncate().x + x_correction,
+                    new_player_transform.translation.truncate().y + y_correction,
+                ),
+                IVec2::from((GRID_SIZE, GRID_SIZE)),
+            );
+
+            if !level_collisions.collision(&new_player_grid_pos) {
+                *player_grid_pos = new_player_grid_pos;
+                player_transform.translation = new_player_transform.translation;
+            }
         }
     }
 }
@@ -125,9 +136,10 @@ pub(crate) fn update_player_stats(
             );
 
             if *player_grid_pos == cow_grid_pos && player_stats.hit_timer.finished() {
+                player_stats.score -= COW_SCORE_HIT;
                 player_stats.health -= COW_HEALTH_HIT;
                 commands.spawn(AudioBundle {
-                    source: asset_server.load("sounds/hit.ogg"),
+                    source: asset_server.load(HIT_SOUND_PATH),
                     ..default()
                 });
                 player_stats.hit_timer.reset();
@@ -139,19 +151,16 @@ pub(crate) fn update_player_stats(
         LevelSelection::Indices(indices) => indices.level,
         _ => 1,
     };
-
     player_stats.health -= time.delta_seconds() / (((level as f32 + 1.0) * 2.0) / 5.0);
-    player_stats.score += time.delta_seconds();
 }
 
 pub(crate) fn center_camera(
-    player_query: Query<&Transform, With<Player>>,
-    mut camera_query: Query<&mut Transform, (With<MainCamera>, Without<Player>)>,
+    player_transform: Query<&Transform, With<Player>>,
+    mut camera_transform: Query<&mut Transform, (With<MainCamera>, Without<Player>)>,
 ) {
-    if let Ok(player_transform) = player_query.get_single() {
-        if let Ok(mut camera_transform) = camera_query.get_single_mut() {
-            camera_transform.translation.x = player_transform.translation.x;
-            camera_transform.translation.y = player_transform.translation.y;
+    if let Ok(player_transform) = player_transform.get_single() {
+        if let Ok(mut camera_transform) = camera_transform.get_single_mut() {
+            camera_transform.translation = player_transform.translation;
         }
     }
 }
