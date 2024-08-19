@@ -24,6 +24,30 @@ pub(crate) struct GoalBundle {
 }
 
 #[derive(Default, Component)]
+pub(crate) struct PortalEntry;
+
+#[derive(Default, Bundle, LdtkEntity)]
+pub(crate) struct PortalEntryBundle {
+    portal_entry: PortalEntry,
+    #[sprite_sheet_bundle]
+    sprite_bundle: LdtkSpriteSheetBundle,
+    #[grid_coords]
+    grid_coords: GridCoords,
+}
+
+#[derive(Default, Component)]
+pub(crate) struct PortalExit;
+
+#[derive(Default, Bundle, LdtkEntity)]
+pub(crate) struct PortalExitBundle {
+    portal_exit: PortalExit,
+    #[sprite_sheet_bundle]
+    sprite_bundle: LdtkSpriteSheetBundle,
+    #[grid_coords]
+    grid_coords: GridCoords,
+}
+
+#[derive(Default, Component)]
 pub(crate) struct BackgroundMusic;
 
 pub(crate) fn check_goal(
@@ -52,6 +76,37 @@ pub(crate) fn check_goal(
                 source: asset_server.load("sounds/level.ogg"),
                 ..default()
             });
+        }
+    }
+}
+
+pub(crate) fn check_portal_entry(
+    mut player_transform: Query<&mut Transform, With<Player>>,
+    mut player_grid_pos: Query<&mut GridCoords, With<Player>>,
+    portal_entries: Query<&GridCoords, (With<PortalEntry>, Without<Player>)>,
+    portal_exits: Query<&GridCoords, (With<PortalExit>, Without<Player>)>,
+    asset_server: Res<AssetServer>,
+    mut commands: Commands,
+) {
+    if let Ok(mut player_grid_pos) = player_grid_pos.get_single_mut() {
+        if let Ok(portal_entry_grid_pos) = portal_entries.get_single() {
+            let portal_exit_grid_pos = portal_exits.single();
+
+            if *player_grid_pos == *portal_entry_grid_pos {
+                *player_grid_pos = *portal_exit_grid_pos;
+
+                let mut player_tranform = player_transform.single_mut();
+                player_tranform.translation = bevy_ecs_ldtk::utils::grid_coords_to_translation(
+                    *player_grid_pos,
+                    IVec2::new(16, 16),
+                )
+                .extend(0.0);
+
+                commands.spawn(AudioBundle {
+                    source: asset_server.load("sounds/teleport.ogg"),
+                    ..default()
+                });
+            }
         }
     }
 }
