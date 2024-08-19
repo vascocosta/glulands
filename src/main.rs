@@ -8,6 +8,7 @@ use bevy::{
 use bevy_ecs_ldtk::prelude::*;
 
 use collisions::{CollisionBundle, LevelCollisions};
+use consts::*;
 use enemies::CowBundle;
 use gameplay::{BackgroundMusic, GameState, GoalBundle, PortalEntryBundle, PortalExitBundle};
 use items::{BronzeBundle, CarrotBundle, KeyBundle};
@@ -20,8 +21,6 @@ mod gameplay;
 mod items;
 mod player;
 mod ui;
-
-const BACKGROUND_COLOR: Color = Color::srgb(0.15, 0.15, 0.15);
 
 fn main() {
     App::new()

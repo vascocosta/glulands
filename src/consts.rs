@@ -5,6 +5,7 @@ pub(crate) const VERSION: &str = "v0.4.2";
 
 pub(crate) const GRID_SIZE: i32 = 16;
 
+pub(crate) const BACKGROUND_COLOR: Color = Color::srgb(0.15, 0.15, 0.15);
 pub(crate) const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
 pub(crate) const TEXT_COLOR: Color = Color::srgb(0.1, 1.0, 0.7);
 pub(crate) const GAME_OVER_COLOR: Color = Color::srgb(0.7, 0.2, 0.3);
