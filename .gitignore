@@ -1,4 +1,5 @@
 /target
 /out
 /assets/*
+/*.tgz
 !/assets/Glulands.ldtk
