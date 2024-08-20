@@ -32,28 +32,27 @@ impl LevelCollisions {
 pub(crate) fn cache_collision_locations(
     mut level_collisions: ResMut<LevelCollisions>,
     mut level_events: EventReader<LevelEvent>,
-    collisions: Query<&GridCoords, With<Collision>>,
+    collision_grid_pos: Query<&GridCoords, With<Collision>>,
     ldtk_project_entities: Query<&Handle<LdtkProject>>,
     ldtk_project_assets: Res<Assets<LdtkProject>>,
 ) {
     for level_event in level_events.read() {
         if let LevelEvent::Spawned(level_iid) = level_event {
+            let ldtk_project_entities = ldtk_project_entities
+                .get_single()
+                .expect("LdtkProject should be loaded when level is spawned");
             let ldtk_project = ldtk_project_assets
-                .get(ldtk_project_entities.single())
+                .get(ldtk_project_entities)
                 .expect("LdtkProject should be loaded when level is spawned");
             let level = ldtk_project
                 .get_raw_level_by_iid(level_iid.get())
                 .expect("spawned level should exist in project");
 
-            let collision_locations = collisions.iter().copied().collect();
-
-            let new_level_collisions = LevelCollisions {
-                collision_locations,
+            *level_collisions = LevelCollisions {
+                collision_locations: collision_grid_pos.iter().copied().collect(),
                 level_width: level.px_wid / GRID_SIZE,
                 level_height: level.px_hei / GRID_SIZE,
             };
-
-            *level_collisions = new_level_collisions;
         }
     }
 }
