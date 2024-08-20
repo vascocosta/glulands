@@ -3,7 +3,7 @@ use bevy_ecs_ldtk::{prelude::*, utils::ldtk_pixel_coords_to_translation_pivoted}
 
 use crate::consts::*;
 
-#[derive(Clone, PartialEq, Debug, Default, Component)]
+#[derive(PartialEq, Debug, Default, Component)]
 pub(crate) struct Patrol {
     pub points: Vec<Vec2>,
     pub index: usize,
@@ -34,7 +34,6 @@ impl LdtkEntity for Patrol {
         for ldtk_point in ldtk_patrol_points {
             let pixel_coords = (ldtk_point.as_vec2() + Vec2::new(0.5, 1.))
                 * Vec2::splat(layer_instance.grid_size as f32);
-
             points.push(ldtk_pixel_coords_to_translation_pivoted(
                 pixel_coords.as_ivec2(),
                 layer_instance.c_hei * layer_instance.grid_size,
@@ -51,10 +50,10 @@ impl LdtkEntity for Patrol {
     }
 }
 
-#[derive(Default, Clone, Component)]
+#[derive(Default, Component)]
 pub(crate) struct Cow;
 
-#[derive(Clone, Default, Bundle, LdtkEntity)]
+#[derive(Default, Bundle, LdtkEntity)]
 pub(crate) struct CowBundle {
     pub cow: Cow,
     #[sprite_sheet_bundle]
@@ -69,8 +68,16 @@ pub(crate) fn patrol(mut query: Query<(&mut Transform, &mut Patrol)>, time: Res<
             continue;
         }
 
-        let start = patrol.points.first().unwrap().extend(0.0);
-        let mut finish = patrol.points.last().unwrap().extend(0.0);
+        let start = patrol
+            .points
+            .first()
+            .unwrap_or(&Vec2::new(0.0, 0.0))
+            .extend(0.0);
+        let mut finish = patrol
+            .points
+            .last()
+            .unwrap_or(&Vec2::new(0.0, 0.0))
+            .extend(0.0);
         finish.y += GRID_SIZE as f32 / 2.0;
         let direction = (finish - start).normalize();
         let orientation = if patrol.forward { 1.0 } else { -1.0 };
