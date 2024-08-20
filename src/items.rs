@@ -4,10 +4,10 @@ use bevy_ecs_ldtk::prelude::*;
 use crate::consts::*;
 use crate::player::{Player, PlayerStats};
 
-#[derive(Default, Clone, Component)]
+#[derive(Default, Component)]
 pub(crate) struct Key;
 
-#[derive(Clone, Default, Bundle, LdtkEntity)]
+#[derive(Default, Bundle, LdtkEntity)]
 pub(crate) struct KeyBundle {
     pub key: Key,
     #[sprite_sheet_bundle]
@@ -16,10 +16,10 @@ pub(crate) struct KeyBundle {
     grid_coords: GridCoords,
 }
 
-#[derive(Default, Clone, Component)]
+#[derive(Default, Component)]
 pub(crate) struct Carrot;
 
-#[derive(Clone, Default, Bundle, LdtkEntity)]
+#[derive(Default, Bundle, LdtkEntity)]
 pub(crate) struct CarrotBundle {
     pub carrot: Carrot,
     #[sprite_sheet_bundle]
@@ -28,10 +28,10 @@ pub(crate) struct CarrotBundle {
     grid_coords: GridCoords,
 }
 
-#[derive(Default, Clone, Component)]
+#[derive(Default, Component)]
 pub(crate) struct Bronze;
 
-#[derive(Clone, Default, Bundle, LdtkEntity)]
+#[derive(Default, Bundle, LdtkEntity)]
 pub(crate) struct BronzeBundle {
     pub carrot: Bronze,
     #[sprite_sheet_bundle]
@@ -53,7 +53,7 @@ pub(crate) fn check_keys(
                 player_stats.keys += 1;
                 commands.entity(key_entity).despawn();
                 commands.spawn(AudioBundle {
-                    source: asset_server.load("sounds/item.ogg"),
+                    source: asset_server.load(ITEM_SOUND_PATH),
                     ..default()
                 });
             }
@@ -74,7 +74,7 @@ pub(crate) fn check_carrots(
                 player_stats.health = (player_stats.health + CARROT_HEALTH).min(PLAYER_MAX_HEALTH);
                 commands.entity(carrot_entity).despawn();
                 commands.spawn(AudioBundle {
-                    source: asset_server.load("sounds/item.ogg"),
+                    source: asset_server.load(ITEM_SOUND_PATH),
                     ..default()
                 });
             }
@@ -95,7 +95,7 @@ pub(crate) fn check_bronze(
                 player_stats.score += BRONZE_SCORE;
                 commands.entity(bronze_entity).despawn();
                 commands.spawn(AudioBundle {
-                    source: asset_server.load("sounds/item.ogg"),
+                    source: asset_server.load(ITEM_SOUND_PATH),
                     ..default()
                 });
             }

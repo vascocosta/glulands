@@ -16,6 +16,7 @@ pub(crate) const HIT_SOUND_PATH: &str = "sounds/hit.ogg";
 pub(crate) const LEVEL_SOUND_PATH: &str = "sounds/level.ogg";
 pub(crate) const TELEPORT_SOUND_PATH: &str = "sounds/teleport.ogg";
 pub(crate) const LOST_SOUND_PATH: &str = "sounds/lost.ogg";
+pub(crate) const ITEM_SOUND_PATH: &str = "sounds/item.ogg";
 
 pub(crate) const BACKGROUND_COLOR: Color = Color::srgb(0.15, 0.15, 0.15);
 pub(crate) const BAR_COLOR: Color = Color::srgb(0.25, 0.25, 0.25);
