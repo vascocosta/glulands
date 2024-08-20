@@ -1,4 +1,5 @@
 #![allow(clippy::type_complexity)]
+#![allow(clippy::too_many_arguments)]
 
 use bevy::{
     audio::{PlaybackMode, Volume},
@@ -78,11 +79,17 @@ fn main() {
                 enemies::patrol,
                 gameplay::check_goal,
                 gameplay::check_game_over,
-                gameplay::check_portal_entry,
                 gameplay::check_cheats,
                 ui::update_status_bar,
             )
                 .run_if(in_state(GameState::Running)),
+        )
+        .add_systems(
+            Update,
+            gameplay::check_portal_entry
+                .run_if(not(in_state(GameState::Menu)))
+                .run_if(not(in_state(GameState::PauseMenu)))
+                .run_if(not(in_state(GameState::GameOver))),
         )
         .run();
 }

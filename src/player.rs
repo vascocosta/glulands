@@ -22,8 +22,9 @@ pub(crate) struct PlayerStats {
     #[deref]
     pub(crate) health: f32,
     pub(crate) keys: usize,
-    hit_timer: Timer,
     pub(crate) score: f32,
+    hit_timer: Timer,
+    pub(crate) teleport_timer: Timer,
 }
 
 impl Default for PlayerStats {
@@ -33,6 +34,7 @@ impl Default for PlayerStats {
             keys: 0,
             score: 0.0,
             hit_timer: Timer::from_seconds(0.250, TimerMode::Once),
+            teleport_timer: Timer::from_seconds(1.0, TimerMode::Once),
         }
     }
 }
